@@ -45,6 +45,34 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/exam/question/edit/single',
+    name: 'SingleEdit',
+    hidden: true,
+    component: () => import('@/views/exam/question/edit/Single'),
+    meta: { title: '单选题编辑', icon: 'tree' }
+  },
+  {
+    path: '/exam/question/edit/multiple',
+    name: 'MultipleEdit',
+    hidden: true,
+    component: () => import('@/views/exam/question/edit/Multiple'),
+    meta: { title: '多选题编辑', icon: 'table' }
+  },
+  {
+    path: '/exam/question/edit/score',
+    name: 'ScoreEdit',
+    hidden: true,
+    component: () => import('@/views/exam/question/edit/Score'),
+    meta: { title: '打分题编辑', icon: 'tree' }
+  },
+  {
+    path: '/exam/question/edit/operation',
+    name: 'OperationEdit',
+    hidden: true,
+    component: () => import('@/views/exam/question/edit/Operation'),
+    meta: { title: '操作题编辑', icon: 'table' }
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,

@@ -7,7 +7,7 @@ function resolve(dir) {
 }
 
 const name = defaultSettings.title // 网址标题
-const port = 8013 // 端口配置
+const port = 8000 // 端口配置
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -24,19 +24,21 @@ module.exports = {
       errors: true
     },
     proxy: {
-      '/api': {
-        target: process.env.VUE_APP_BASE_API,
+      '/api/': {
+        target: 'http://49.233.183.161:8000',
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': 'api'
-        }
+        secure: false,
+        pathRewrite: { '^/api': '/api' },
+        logLevel: 'debug'
       },
       '/auth': {
-        target: process.env.VUE_APP_BASE_API,
+        target: 'http://49.233.183.161:8000',
         changeOrigin: true,
         pathRewrite: {
-          '^/auth': 'auth'
-        }
+          '^/auth': '/auth'
+        },
+        logLevel: 'debug'
+
       }
     }
   },
