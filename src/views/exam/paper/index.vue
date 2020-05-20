@@ -45,7 +45,7 @@
         </el-form>
         <el-upload
           ref="upload"
-          action="http://localhost:8000/api/exam/paper/upload"
+          action="http://49.233.183.161:8000/api/exam/paper/upload"
           name="excelFile"
           :data="formDada"
           :headers="headers"

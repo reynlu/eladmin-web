@@ -25,14 +25,14 @@ module.exports = {
     },
     proxy: {
       '/api/': {
-        target: 'http://49.233.183.161:8000',
+        target: (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'http://49.233.183.161:8000'),
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/api': '/api' },
         logLevel: 'debug'
       },
       '/auth': {
-        target: 'http://49.233.183.161:8000',
+        target: (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'http://49.233.183.161:8000'),
         changeOrigin: true,
         pathRewrite: {
           '^/auth': '/auth'

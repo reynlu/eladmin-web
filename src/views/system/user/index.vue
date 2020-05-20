@@ -65,12 +65,27 @@
               />
             </el-select>
             <rrOperation />
+            <el-button type="primary" class="link-left" @click="uploadXML">导入</el-button>
           </div>
-          <crudOperation show="" :permission="permission" />
+          <crudOperation show :permission="permission" />
         </div>
         <!--表单渲染-->
-        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
-          <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
+        <el-dialog
+          append-to-body
+          :close-on-click-modal="false"
+          :before-close="crud.cancelCU"
+          :visible.sync="crud.status.cu > 0"
+          :title="crud.status.title"
+          width="570px"
+        >
+          <el-form
+            ref="form"
+            :inline="true"
+            :model="form"
+            :rules="rules"
+            size="small"
+            label-width="66px"
+          >
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" />
             </el-form-item>
@@ -141,8 +156,38 @@
             <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
           </div>
         </el-dialog>
+        <el-dialog :visible.sync="dialogVisible" title="导入考题表格" width="570px">
+          <el-upload
+            ref="upload"
+            class="upload-demo"
+            action="http://49.233.183.161:8000/api/users/import-user"
+            name="excelFile"
+            :data="params"
+            :headers="headers"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :file-list="fileList"
+            :auto-upload="false"
+          >
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-button
+              style="margin-left: 10px;"
+              size="small"
+              type="success"
+              @click="submitUpload"
+            >上传到服务器</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传XML文件，且不超过500kb</div>
+          </el-upload>
+        </el-dialog>
         <!--表格渲染-->
-        <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
+        <el-table
+          ref="table"
+          v-loading="crud.loading"
+          :data="crud.data"
+          style="width: 100%;"
+          @selection-change="crud.selectionChangeHandler"
+        >
           <el-table-column :selectable="checkboxT" type="selection" width="55" />
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名" />
           <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />
@@ -151,7 +196,7 @@
           <el-table-column :show-overflow-tooltip="true" width="125" prop="email" label="邮箱" />
           <el-table-column :show-overflow-tooltip="true" width="110" prop="dept" label="部门 / 岗位">
             <template slot-scope="scope">
-              <div>{{ scope.row.dept.name }} / {{ scope.row.job.name }}</div>
+              <div>{{ scope.row.dept.name }}</div>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center" prop="enabled">
@@ -206,15 +251,37 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import Treeselect from '@riophae/vue-treeselect'
 import { mapGetters } from 'vuex'
+import { getToken } from '@/utils/auth'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 let userRoles = []
-const defaultForm = { id: null, username: null, nickName: null, sex: '男', email: null, enabled: 'false', roles: [], job: { id: null }, dept: { id: null }, phone: null }
+const defaultForm = {
+  id: null,
+  username: null,
+  nickName: null,
+  sex: '男',
+  email: null,
+  enabled: 'false',
+  roles: [],
+  job: { id: null },
+  dept: { id: null },
+  phone: null
+}
 export default {
   name: 'User',
-  components: { Treeselect, crudOperation, rrOperation, udOperation, pagination },
+  components: {
+    Treeselect,
+    crudOperation,
+    rrOperation,
+    udOperation,
+    pagination
+  },
   cruds() {
-    return CRUD({ title: '用户', url: 'api/users', crudMethod: { ...crudUser }})
+    return CRUD({
+      title: '用户',
+      url: 'api/users',
+      crudMethod: { ...crudUser }
+    })
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 数据字典
@@ -232,7 +299,12 @@ export default {
     }
     return {
       height: document.documentElement.clientHeight - 180 + 'px;',
-      deptName: '', depts: [], deptDatas: [], jobs: [], level: 3, roles: [],
+      deptName: '',
+      depts: [],
+      deptDatas: [],
+      jobs: [],
+      level: 3,
+      roles: [],
       defaultProps: { children: 'children', label: 'name' },
       permission: {
         add: ['admin', 'user:add'],
@@ -256,16 +328,16 @@ export default {
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
         ],
-        phone: [
-          { required: true, trigger: 'blur', validator: validPhone }
-        ]
+        phone: [{ required: true, trigger: 'blur', validator: validPhone }]
+      },
+      dialogVisible: false,
+      headers: {
+        Authorization: getToken()
       }
     }
   },
   computed: {
-    ...mapGetters([
-      'user'
-    ])
+    ...mapGetters(['user'])
   },
   created() {
     this.$nextTick(() => {
@@ -337,12 +409,6 @@ export default {
           type: 'warning'
         })
         return false
-      } else if (!crud.form.job.id) {
-        this.$message({
-          message: '岗位不能为空',
-          type: 'warning'
-        })
-        return false
       } else if (this.roles.length === 0) {
         this.$message({
           message: '角色不能为空',
@@ -357,7 +423,9 @@ export default {
     getDeptDatas() {
       const sort = 'id,desc'
       const params = { sort: sort }
-      if (this.deptName) { params['name'] = this.deptName }
+      if (this.deptName) {
+        params['name'] = this.deptName
+      }
       getDepts(params).then(res => {
         this.deptDatas = res.content
       })
@@ -379,31 +447,51 @@ export default {
     },
     // 改变状态
     changeEnabled(data, val) {
-      this.$confirm('此操作将 "' + this.dict.label.user_status[val] + '" ' + data.username + ', 是否继续？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        crudUser.edit(data).then(res => {
-          this.crud.notify(this.dict.label.user_status[val] + '成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
-        }).catch(() => {
+      this.$confirm(
+        '此操作将 "' +
+          this.dict.label.user_status[val] +
+          '" ' +
+          data.username +
+          ', 是否继续？',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          crudUser
+            .edit(data)
+            .then(res => {
+              this.crud.notify(
+                this.dict.label.user_status[val] + '成功',
+                CRUD.NOTIFICATION_TYPE.SUCCESS
+              )
+            })
+            .catch(() => {
+              data.enabled = !data.enabled
+            })
+        })
+        .catch(() => {
           data.enabled = !data.enabled
         })
-      }).catch(() => {
-        data.enabled = !data.enabled
-      })
     },
     // 获取弹窗内角色数据
     getRoles() {
-      getAll().then(res => {
-        this.roles = res
-      }).catch(() => { })
+      getAll()
+        .then(res => {
+          this.roles = res
+        })
+        .catch(() => {})
     },
     // 获取弹窗内岗位数据
     getJobs(id) {
-      getAllJob(id).then(res => {
-        this.jobs = res.content
-      }).catch(() => { })
+      getAllJob(id)
+        .then(res => {
+          this.jobs = res.content
+        })
+        .catch(() => {})
     },
     // 点击部门搜索对应的岗位
     selectFun(node, instanceId) {
@@ -412,12 +500,20 @@ export default {
     },
     // 获取权限级别
     getRoleLevel() {
-      getLevel().then(res => {
-        this.level = res.level
-      }).catch(() => { })
+      getLevel()
+        .then(res => {
+          this.level = res.level
+        })
+        .catch(() => {})
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id
+    },
+    uploadXML() {
+      this.dialogVisible = true
+    },
+    submitUpload() {
+      this.$refs.upload.submit()
     }
   }
 }

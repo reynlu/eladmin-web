@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="formDada" :inline="true">
+    <el-form ref="formDada" :model="formDada" :inline="true" :rules="rules">
       <el-form-item label="题目ID：">
         <el-input v-model="formDada.id" clearable />
       </el-form-item>
-      <el-form-item label="归属考站：">
-        <el-select v-model="formDada.level" placeholder="选择考站项目" clearable @change="levelChange">
+      <el-form-item label="归属考站：" prop="station" required>
+        <el-select v-model="formDada.station" placeholder="选择考站项目" clearable @change="stationChange">
           <el-option
             v-for="item in stationEnum"
             :key="item.key"
@@ -15,7 +15,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="学科：">
-        <el-select v-model="formDada.subjectId" placeholder="选择学科项目" clearable>
+        <el-select v-model="formDada.marjorId" placeholder="选择学科项目" clearable>
           <el-option
             v-for="item in majorEnum"
             :key="item.key"
@@ -24,10 +24,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="题型：">
-        <el-select v-model="formDada.questionType" placeholder="选择题型" clearable>
+      <el-form-item label="题型：" prop="type" required>
+        <el-select v-model="formDada.type" placeholder="选择题型" clearable @change="typeChange">
           <el-option
-            v-for="item in questionType"
+            v-for="item in questionTypeEnum"
             :key="item.key"
             :value="item.key"
             :label="item.value"
@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm">查询</el-button>
+        <el-button type="primary" @click="search">查询</el-button>
         <el-popover placement="bottom" trigger="click">
           <el-button
             v-for="item in editUrlEnum"
@@ -63,7 +63,7 @@
       <el-upload
         ref="upload"
         class="upload-demo"
-        action="http://localhost:8000/api/exam/question/upload"
+        action="http://49.233.183.161:8000/api/exam/question/upload"
         name="excelFile"
         :data="params"
         :headers="headers"
@@ -86,7 +86,7 @@
 
     <el-table v-loading="listLoading" :data="tableData" border style="width: 100%">
       <el-table-column fixed prop="id" label="题目编号" width="80" />
-      <el-table-column prop="stationLevel" label="题目所属考站" :formatter="stationFormat" width="160" />
+      <el-table-column prop="station" label="题目所属考站" :formatter="stationFormat" width="160" />
       <el-table-column prop="difficult" label="题目难度" width="180" />
       <el-table-column
         prop="questionType"
@@ -115,14 +115,23 @@ export default {
     return {
       formDada: {
         id: null,
-        questionType: null,
-        level: null,
-        subjectId: null,
-        pageIndex: 1,
-        pageSize: 10
+        tyep: null,
+        station: null,
+        marjorId: null,
+        page: 0,
+        size: 10
+      },
+      rules: {
+        type: [
+          { required: true, message: '请选择考试题型', trigger: 'blur' }
+        ],
+        station: [
+          { required: true, message: '请选择考题所属考站', trigger: 'blur' }
+        ]
+        // marjorId: [{ required: true, message: "请选择专业", trigger: "blur" }]
       },
       subjectFilter: null,
-      listLoading: true,
+      listLoading: false,
       tableData: [],
       total: 0,
       questionShow: {
@@ -140,20 +149,27 @@ export default {
       }
     }
   },
-  created() {
-    this.search()
-  },
+  created() {},
   methods: {
     search() {
-      this.listLoading = true
-      getQuestionList(this.formDada).then(response => {
-        console.log(response.data)
-        this.tableData = response.content
-        this.listLoading = false
+      this.$refs.formDada.validate(valid => {
+        if (valid) {
+          this.listLoading = true
+          getQuestionList(this.formDada).then(response => {
+            console.log(response.data)
+            this.tableData = response.content
+            this.listLoading = false
+          })
+        } else {
+          return false
+        }
       })
     },
-    levelChange() {
-      this.formDada.subjectId = null
+    stationChange(value) {
+      this.formDada.station = value
+    },
+    typeChange(value) {
+      this.formDada.type = value
     },
     submitForm() {},
     editQuestion(row) {

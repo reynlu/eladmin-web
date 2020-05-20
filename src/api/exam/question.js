@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getQuestionList() {
+export function getQuestionList(params) {
   return request({
     url: 'api/exam/question/get-question-list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

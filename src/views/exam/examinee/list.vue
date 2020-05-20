@@ -39,7 +39,7 @@
       <el-upload
         ref="upload"
         class="upload-demo"
-        action="http://localhost:8000/api/exam/examinee/import-examinee"
+        action="http://49.233.183.161:8000/api/exam/examinee/import-examinee"
         name="excelFile"
         :headers="headers"
         :data="form"
@@ -80,7 +80,15 @@
       </el-table-column>
     </el-table>
     <!--分页组件-->
-    <pagination />
+    <el-pagination
+      :current-page="formDada.page"
+      :page-sizes="[10,20]"
+      :page-size="formDada.size"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 <script>
@@ -88,15 +96,15 @@ import { getExamineeList } from '@/api/exam/examinee'
 import taskApi from '@/api/exam/task'
 import { mapGetters, mapState } from 'vuex'
 import { getToken } from '@/utils/auth'
-import pagination from '@crud/Pagination'
 export default {
-  components: { pagination },
   data() {
     return {
       formDada: {
         examineeId: null,
         major_id: null,
-        task_exam_id: null
+        task_exam_id: null,
+        size: 10,
+        page: 1
       },
       form: {
         task_exam_id: null
@@ -112,7 +120,8 @@ export default {
       headers: {
         Authorization: getToken()
       },
-      tasks: null // 导入考生的时候的时候需要指定考试的任务
+      tasks: null, // 导入考生的时候的时候需要指定考试的任务
+      total: 0
     }
   },
   created() {
@@ -135,6 +144,7 @@ export default {
       this.listLoading = true
       getExamineeList(this.formDada).then(response => {
         this.tableData = response.content
+        this.total = response.totalElements
         this.listLoading = false
       })
     },
@@ -150,9 +160,19 @@ export default {
         }
       })
     },
-    add() {},
+    add() {
+
+    },
     handleSuccess(response, file) {
       console.log(response)
+    },
+    handleSizeChange(val) {
+      this.formDada.size = val
+      this.search()
+    },
+    handleCurrentChange(val) {
+      this.formDada.page = val
+      this.search()
     }
   },
   computed: {

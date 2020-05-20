@@ -57,7 +57,7 @@
         <el-upload
           ref="upload"
           class="upload-demo"
-          action="http://localhost:8889/api/question/batchInsertShops"
+          action="http://49.233.183.161:8000/api/question/batchInsertShops"
           name="excelFile"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
