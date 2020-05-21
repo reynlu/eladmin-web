@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="formDada" :inline="true">
+    <el-form ref="formDada" :model="formDada" :rules="rules" :inline="true">
       <el-form-item label="准考证号：">
         <el-input v-model="formDada.examineeId" clearable />
       </el-form-item>
-      <el-form-item label="考试任务" prop="p_task_exam_id" required>
-        <el-select v-model="formDada.task_exam_id" placeholder="请选择试卷归属的考试任务" clearable>
+      <el-form-item label="考试任务" prop="taskExamId" required>
+        <el-select v-model="formDada.taskExamId" placeholder="请选择试卷归属的考试任务" clearable>
           <el-option v-for="item in tasks" :key="item.id" :value="item.id" :label="item.title" />
         </el-select>
       </el-form-item>
       <el-form-item label="学科：">
-        <el-select v-model="formDada.major_id" placeholder="选择学科项目" clearable>
+        <el-select v-model="formDada.majorId" placeholder="选择学科项目" clearable>
           <el-option
             v-for="item in majorEnum"
             :key="item.key"
@@ -22,7 +22,7 @@
       <el-form-item>
         <el-button type="primary" @click="submitForm">查询</el-button>
         <router-link :to="{path:'/exam/examinee/edit'}">
-          <el-button size="primary">添加</el-button>
+          <el-button type="primary">添加</el-button>
         </router-link>
         <el-button type="primary" @click="dialogVisible=true">导入</el-button>
       </el-form-item>
@@ -39,14 +39,12 @@
       <el-upload
         ref="upload"
         class="upload-demo"
-        action="http://49.233.183.161:8000/api/exam/examinee/import-examinee"
+        :action="uploadUrl"
         name="excelFile"
         :headers="headers"
         :data="form"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
         :on-success="handleSuccess"
-        :file-list="fileList"
+        limit="1"
         :auto-upload="false"
       >
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -101,8 +99,8 @@ export default {
     return {
       formDada: {
         examineeId: null,
-        major_id: null,
-        task_exam_id: null,
+        majorId: null,
+        taskExamId: null,
         size: 10,
         page: 1
       },
@@ -110,7 +108,7 @@ export default {
         task_exam_id: null
       },
       rules: {
-        task_exam_id: [
+        taskExamId: [
           { required: true, message: '请选择考试任务', trigger: 'blur' }
         ]
       },
@@ -121,11 +119,11 @@ export default {
         Authorization: getToken()
       },
       tasks: null, // 导入考生的时候的时候需要指定考试的任务
-      total: 0
+      total: 0,
+      uploadUrl: process.env.VUE_APP_BASE_API + '/api/exam/examinee/import-examinee'
     }
   },
   created() {
-    this.search()
     taskApi.get().then(response => {
       console.log(response.content)
       this.tasks = response.content
@@ -135,17 +133,30 @@ export default {
   methods: {
     search() {
       this.listLoading = true
-      getExamineeList(this.formDada).then(response => {
-        this.tableData = response.content
-        this.listLoading = false
+      this.$refs.formDada.validate(valid => {
+        if (valid) {
+          getExamineeList(this.formDada).then(response => {
+            this.tableData = response.content
+            this.listLoading = false
+          })
+        } else {
+          return false
+        }
       })
     },
     submitForm() {
       this.listLoading = true
-      getExamineeList(this.formDada).then(response => {
-        this.tableData = response.content
-        this.total = response.totalElements
-        this.listLoading = false
+      this.$refs.formDada.validate(valid => {
+        if (valid) {
+          getExamineeList(this.formDada).then(response => {
+            this.tableData = response.content
+            this.total = response.totalElements
+            this.listLoading = false
+          })
+        } else {
+          this.listLoading = false
+          return false
+        }
       })
     },
     majorFormatter(row, column, cellValue, index) {
@@ -160,11 +171,13 @@ export default {
         }
       })
     },
-    add() {
-
-    },
+    add() {},
     handleSuccess(response, file) {
-      console.log(response)
+      this.dialogVisible = false
+      this.$message({
+        message: '文件已经上传成功',
+        type: 'warning'
+      })
     },
     handleSizeChange(val) {
       this.formDada.size = val

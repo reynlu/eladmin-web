@@ -103,7 +103,16 @@
         align="center"
       />
     </el-table>
-
+    <!--分页组件-->
+    <el-pagination
+      :current-page="defaultForm.page"
+      :page-sizes="[15,30]"
+      :page-size="defaultForm.size"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
     <el-dialog :visible.sync="dialogVisible" title="导入师资信息" width="570px">
       <el-upload
         ref="upload"
@@ -128,16 +137,6 @@
         <div slot="tip" class="el-upload__tip">只能上传XML文件，且不超过500kb</div>
       </el-upload>
     </el-dialog>
-    <!--分页组件-->
-    <el-pagination
-      :current-page="defaultForm.page"
-      :page-sizes="[15,30]"
-      :page-size="defaultForm.size"
-      :total="total"
-      layout="total, sizes, prev, pager, next, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
   </div>
 </template>
 

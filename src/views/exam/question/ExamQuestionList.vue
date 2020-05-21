@@ -63,14 +63,13 @@
       <el-upload
         ref="upload"
         class="upload-demo"
-        action="http://49.233.183.161:8000/api/exam/question/upload"
+        :action="uploadUrl"
         name="excelFile"
         :data="params"
         :headers="headers"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :on-success="handleSuccess"
-        :file-list="fileList"
         :auto-upload="false"
       >
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -146,7 +145,8 @@ export default {
       dialogVisible: false,
       headers: {
         Authorization: getToken()
-      }
+      },
+      uploadUrl: process.env.VUE_APP_BASE_API + '/api/exam/question/upload'
     }
   },
   created() {},
