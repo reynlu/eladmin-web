@@ -32,4 +32,20 @@ export function getPhysicianInformations(params) {
   })
 }
 
-export default { add, edit, del, getPhysicianInformations }
+export function getAllDepartment(params) {
+  return request({
+    url: 'api/physician/get-department-list',
+    method: 'get',
+    params
+  })
+}
+
+export function getAllSubjects(params) {
+  return request({
+    url: 'api/physician/get-teaching-subjects-list',
+    method: 'get',
+    params
+  })
+}
+
+export default { add, edit, del, getPhysicianInformations, getAllDepartment, getAllSubjects }

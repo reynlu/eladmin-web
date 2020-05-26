@@ -160,7 +160,7 @@
           <el-upload
             ref="upload"
             class="upload-demo"
-            action="http://49.233.183.161:8000/api/users/import-user"
+            action="uploadUrl"
             name="excelFile"
             :data="params"
             :headers="headers"
@@ -333,7 +333,8 @@ export default {
       dialogVisible: false,
       headers: {
         Authorization: getToken()
-      }
+      },
+      uploadUrl: process.env.VUE_APP_BASE_API + '/api/users/import-user'
     }
   },
   computed: {

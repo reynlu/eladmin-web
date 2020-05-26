@@ -57,7 +57,7 @@
         <el-upload
           ref="upload"
           class="upload-demo"
-          action="http://49.233.183.161:8000/api/question/batchInsertShops"
+          action="uploadUrl"
           name="excelFile"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
@@ -95,7 +95,8 @@ export default {
         difficult: 0
       },
       rule: {},
-      formLoading: false
+      formLoading: false,
+      uploadUrl: process.env.VUE_APP_BASE_API + '/api/question/batchInsertShops'
     }
   },
   methods: {

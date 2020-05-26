@@ -9,19 +9,19 @@
         <el-select v-model="defaultForm.department" placeholder="选择所在科室" clearable>
           <el-option
             v-for="item in departments"
-            :key="item.key"
-            :value="item.value"
-            :label="item.value"
+            :key="item.departmentName"
+            :value="item.departmentName"
+            :label="item.departmentName"
           />
         </el-select>
       </el-form-item>
       <el-form-item label="带教专业：" prop="teachingSubject">
         <el-select v-model="defaultForm.teachingSubjects" placeholder="选择带教专业" clearable>
           <el-option
-            v-for="item in teachingSubjects"
-            :key="item.key"
-            :value="item.value"
-            :label="item.value"
+            v-for="item in subjects"
+            :key="item.teachingSubjectsName"
+            :value="item.teachingSubjectsName"
+            :label="item.teachingSubjectsName"
           />
         </el-select>
       </el-form-item>
@@ -117,7 +117,7 @@
       <el-upload
         ref="upload"
         class="upload-demo"
-        action="http://49.233.183.161:8000/api/physician/import-physician"
+        action="uploadUrl"
         name="excelFile"
         :data="params"
         :headers="headers"
@@ -141,7 +141,11 @@
 </template>
 
 <script>
-import { getPhysicianInformations } from '@/api/physician/physician'
+import {
+  getPhysicianInformations,
+  getAllDepartment,
+  getAllSubjects
+} from '@/api/physician/physician'
 import { getToken } from '@/utils/auth'
 import { mapGetters, mapState } from 'vuex'
 
@@ -175,12 +179,15 @@ export default {
       },
       loading: false,
       dialogVisible: false,
-      departments: null,
-      teachingSubjects: null
+      departments: [],
+      subjects: [],
+      uploadUrl:
+        process.env.VUE_APP_BASE_API + '/api/physician/import-physician'
     }
   },
   created() {
-    this.search()
+    // this.search();
+    this.init()
   },
   methods: {
     search() {
@@ -189,6 +196,14 @@ export default {
         this.physicianList = response.content
         this.total = response.totalElements
         this.listLoading = false
+      })
+    },
+    init() {
+      getAllSubjects().then(response => {
+        this.subjects = response
+      })
+      getAllDepartment().then(response => {
+        this.departments = response
       })
     },
     uploadXML() {
