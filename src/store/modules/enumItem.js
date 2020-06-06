@@ -197,6 +197,132 @@ const state = {
       value: '本科'
     }
     ]
+  },
+  resident: {
+    recruitmentYear: [
+      {
+        key: 1,
+        value: '2017'
+      },
+      {
+        key: 2,
+        value: '2018'
+      },
+      {
+        key: 3,
+        value: '2019'
+      },
+      {
+        key: 4,
+        value: '2020'
+      }
+    ],
+    trainingBaseName: [
+      {
+        key: 1,
+        value: '口腔全科'
+      },
+      {
+        key: 2,
+        value: '口腔内科'
+      },
+      {
+        key: 3,
+        value: '口腔颌面外科'
+      },
+      {
+        key: 4,
+        value: '口腔修复科'
+      },
+      {
+        key: 5,
+        value: '口腔正畸科'
+      }
+    ],
+    residentType:
+    [{
+      key: 1,
+      value: '全日制专硕研究生'
+    },
+    {
+      key: 2,
+      value: '社会学员'
+    },
+    {
+      key: 3,
+      value: '本单位学员'
+    },
+    {
+      key: 4,
+      value: '外单位委培学员'
+    }],
+    yy:
+    [{
+      key: 1,
+      value: '应届'
+    },
+    {
+      key: 2,
+      value: '往届'
+    }],
+    residentState:
+    [{
+      key: 1,
+      value: '在培'
+    },
+    {
+      key: 2,
+      value: '延期'
+    },
+    {
+      key: 3,
+      value: '暂停'
+    }],
+    academicDegree:
+    [{
+      key: 1,
+      value: '学士'
+    },
+    {
+      key: 2,
+      value: '专业硕士'
+    },
+    {
+      key: 3,
+      value: '科学硕士'
+    },
+    {
+      key: 4,
+      value: '专业博士'
+    },
+    {
+      key: 5,
+      value: '科学博士'
+    }],
+    education:
+    [{
+      key: 1,
+      value: '本科'
+    },
+    {
+      key: 2,
+      value: '大学本科'
+    },
+    {
+      key: 3,
+      value: '研究生'
+    }],
+    qualification:
+    [
+      {
+        key: 1,
+        value: '是'
+      },
+      {
+        key: 2,
+        value: '否'
+      }
+    ]
   }
 }
 
