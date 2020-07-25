@@ -86,7 +86,7 @@
       </el-upload>
     </el-dialog>
 
-    <el-table v-loading="listLoading" :data="tableData" stripe height="250">
+    <el-table v-loading="listLoading" :data="tableData" stripe height="850">
       <el-table-column prop="id" label="试卷编号" width="80" />
       <el-table-column prop="station" label="试卷所属考站" :formatter="stationFormat" width="160" />
       <el-table-column prop="name" label="试卷标题" width="380" />
@@ -95,7 +95,7 @@
       <el-table-column prop="questionCount" label="题目数量" width="100" />
       <el-table-column label="操作" width="160">
         <template slot-scope="{row}">
-          <el-button type="primary" @click="handleClick(row.id, row.name)">查看</el-button>
+          <el-button type="primary" @click="handleClick(row.id, row.name, row.type)">查看</el-button>
           <el-button type="primary" @click="editQuestion(row.id)">编辑</el-button>
         </template>
       </el-table-column>
@@ -103,7 +103,7 @@
     <!--分页组件-->
     <el-pagination
       :current-page="defaultForm.page"
-      :page-sizes="[10,20]"
+      :page-sizes="[50,100]"
       :page-size="defaultForm.size"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
@@ -127,7 +127,7 @@ export default {
         station: null,
         taskExamId: null,
         page: 0,
-        size: 10
+        size: 50
       },
       rules: {
         taskExamId: [
@@ -149,7 +149,8 @@ export default {
         ]
       },
       params: {
-        paperId: 1
+        paperId: 1,
+        type: 1
       },
       subjectFilter: null,
       listLoading: false,
@@ -203,18 +204,20 @@ export default {
     },
     uploadXML(type) {
       this.uploadForm.type = type
+      console.log(this.uploadForm)
       this.dialogVisible = true
     },
-    handleClick(id, name) {
-      this.params.paper_id = id
+    handleClick(id, name, type) {
+      this.params.paperId = id
+      this.params.type = type
       paperApi.downloadJsonFile(this.params).then(response => {
         console.log(response)
         const url = window.URL.createObjectURL(new Blob([response], { type: 'application/octet-stream' }))
         const link = document.createElement('a')
         link.style.display = 'none'
         link.href = url
-        // const fileName = parseTime(new Date()) + "-" + name + "." + suffix;
-        link.setAttribute('download', '')
+        const fileName = name.replace('xlsx', 'json')
+        link.setAttribute('download', fileName)
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)

@@ -3,7 +3,16 @@
     <!--工具栏-->
     <el-form ref="defaultForm" :model="defaultForm" :inline="true">
       <el-form-item label="师资ID：">
-        <el-input v-model="defaultForm.physicianId" clearable />
+        <el-input v-model="defaultForm.physicianId" placeholder="请输入师资ID" clearable />
+      </el-form-item>
+      <el-form-item label="姓名：">
+        <el-input v-model="defaultForm.name" placeholder="请输入姓名" clearable />
+      </el-form-item>
+      <el-form-item label="手机号：">
+        <el-input v-model="defaultForm.phone" placeholder="请输入手机号" clearable />
+      </el-form-item>
+      <el-form-item label="培训基地：">
+        <el-input v-model="defaultForm.trainingName" placeholder="请输入培训基地" clearable />
       </el-form-item>
       <el-form-item label="所在科室：" prop="department">
         <el-select v-model="defaultForm.department" placeholder="选择所在科室" clearable>
@@ -169,6 +178,7 @@ export default {
         education: null,
         coordination: null,
         teaching: null,
+        trainingName: null,
         page: 0,
         size: 15
       },

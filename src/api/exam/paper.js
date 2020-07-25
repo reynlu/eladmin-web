@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function get(data) {
+export function get(params) {
   return request({
     url: 'api/exam/paper/get-all-paper',
     method: 'get',
-    data
+    params
   })
 }
 
