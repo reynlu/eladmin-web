@@ -87,6 +87,7 @@
       ref="table"
       v-loading="loading"
       :data="physicianList"
+      height="600"
       size="small"
       style="width: 100%;"
     >

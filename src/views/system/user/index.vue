@@ -160,7 +160,7 @@
           <el-upload
             ref="upload"
             class="upload-demo"
-            action="uploadUrl"
+            :action="uploadUrl"
             name="excelFile"
             :data="params"
             :headers="headers"

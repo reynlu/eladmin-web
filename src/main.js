@@ -1,6 +1,8 @@
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
+import Vant from 'vant'
+import 'vant/lib/index.css'
 
 import 'normalize.css/normalize.css'
 
@@ -36,6 +38,7 @@ Vue.use(dict)
 Vue.use(Element, {
   size: Cookies.get('size') || 'small' // set element-ui default size
 })
+Vue.use(Vant)
 
 Vue.config.productionTip = false
 

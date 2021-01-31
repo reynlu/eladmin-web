@@ -85,6 +85,30 @@ export const constantRouterMap = [
         meta: { title: '个人中心' }
       }
     ]
+  },
+  {
+    path: '/mobile/rotation/list',
+    component: (resolve) => require(['@/views/mobile/rotation/list'], resolve),
+    name: '轮转计划',
+    meta: { title: '轮转计划' }
+  },
+  {
+    path: '/mobile/rotation/exchange',
+    component: (resolve) => require(['@/views/mobile/rotation/exchange'], resolve),
+    name: '轮转调换申请',
+    meta: { title: '轮转调换申请' }
+  },
+  {
+    path: '/mobile/diagnosis/add',
+    component: (resolve) => require(['@/views/mobile/diagnosis/addDiagnosis'], resolve),
+    name: '录入诊断',
+    meta: { title: '录入诊断' }
+  },
+  {
+    path: '/mobile/diagnosis/history',
+    component: (resolve) => require(['@/views/mobile/diagnosis/history'], resolve),
+    name: '诊断',
+    meta: { title: '诊断记录' }
   }
 ]
 

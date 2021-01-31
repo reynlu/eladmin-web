@@ -6,7 +6,7 @@
           v-for="item in categories"
           :key="item.id"
           :label="item.categoryName"
-          :value="item.id"
+          :value="item"
         />
       </el-select>
       <el-input
@@ -80,7 +80,8 @@ export default {
         dynamicTags: [],
         title: '',
         mdContent: '',
-        cid: ''
+        cid: '',
+        pic: []
       },
       uploadUrl: process.env.VUE_APP_BASE_API + '/api/qiNiuContent'
     }
@@ -123,7 +124,8 @@ export default {
           title: _this.article.title,
           mdContent: _this.article.mdContent,
           htmlContent: _this.$refs.md.d_render,
-          cid: _this.article.cid,
+          pic: _this.article.pic.join(','),
+          category: _this.article.cid,
           state: state,
           dynamicTags: _this.article.dynamicTags
         })
@@ -153,13 +155,18 @@ export default {
       upload(this.uploadUrl, $file).then(resp => {
         var json = resp.data
         if (json.errno === 0) {
+          _this.article.pic.push(json.data[0])
           _this.$refs.md.$imglst2Url([[pos, json.data[0]]])
         } else {
           _this.$message({ type: 'error', message: json.msg })
         }
       })
     },
-    imgDel(pos) {},
+    imgDel(pos) {
+      var url = pos[0]
+      var index = this.article.pic.indexOf(url)
+      this.article.pic.splice(index, 1)
+    },
     getCategories() {
       const _this = this
       articleApi.getCategory().then(resp => {
