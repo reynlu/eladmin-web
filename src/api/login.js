@@ -13,6 +13,16 @@ export function login(username, password, code, uuid) {
   })
 }
 
+export function loginByWexin(code) {
+  return request({
+    url: 'auth/login-code',
+    method: 'post',
+    data: {
+      code
+    }
+  })
+}
+
 export function getInfo() {
   return request({
     url: 'auth/info',

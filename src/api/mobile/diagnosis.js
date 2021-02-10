@@ -5,7 +5,7 @@ export function getDiagnosisRecords(params) {
   return request({
     url: '/api/resident-diagnosis-record/list',
     method: 'get',
-    data: params
+    params
   })
 }
 

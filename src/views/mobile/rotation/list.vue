@@ -3,10 +3,10 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
       <div v-for="(item, index) in list" :key="item.id" class="list-cell-container">
         <p class="list-cell-header">轮转计划第{{ index + 1 }}个月 - {{ item.recordYearMonth }}</p>
-        <p><label class="list-cell-label">科室秘书</label>  {{ item.trainingDepartmentId }}</p>
         <p><label class="list-cell-label">带教老师</label>  {{ item.trainingTeacherName }}</p>
-        <p><label class="list-cell-label">轮转状态</label>  {{ item.trainingDepartmentId }}</p>
-        <p><label class="list-cell-label">学习内容</label>  {{ item.trainingDepartmentId }}</p>
+        <p><label class="list-cell-label">轮转科室</label>  {{ getDepartment(item.trainingDepartmentId).departmentName }}</p>
+        <p><label class="list-cell-label">学习内容</label>  {{ getDepartment(item.trainingDepartmentId).departmentSubject }}</p>
+        <p><label class="list-cell-label">科室秘书</label>  {{ getDepartment(item.trainingDepartmentId).departmentSecretary }}</p>
       </div>
     </van-list>
   </div>
@@ -15,12 +15,20 @@
 import 'vant/lib/index.css'
 import store from '@/store'
 import { getRotationRecords } from '@/api/mobile/rotation'
+import { getAllDepatments } from '@/api/mobile/department'
+
 export default {
   data() {
     return {
       defaultForm: {
-        residentId: store.getters.user.uid
+        residentId: store.getters.user.uid,
+        size: 40
       },
+      dpsForm: {
+        page: 0,
+        size: 40
+      },
+      departments: [],
       list: [],
       total: 0,
       loading: false,
@@ -28,13 +36,23 @@ export default {
     }
   },
   methods: {
-    onLoad() {
-      getRotationRecords(this.defaultForm).then(response => {
-        this.list = response.content
-        this.total = response.totalElements
-        this.loading = false
-        this.finished = true
-      })
+    async onLoad() {
+      const dps = await getAllDepatments(this.dpsForm)
+      const rotations = await getRotationRecords(this.defaultForm)
+      console.log(dps)
+      console.log(rotations)
+      this.departments = this.departments.concat(dps.content)
+      this.list = rotations.content
+      this.total = rotations.totalElements
+      this.loading = false
+      this.finished = true
+    },
+    getDepartment(departmentId) {
+      for (let i = 0; i < this.departments.length; i++) {
+        if (this.departments[i].departmentId) {
+          return this.departments[i]
+        }
+      }
     }
   }
 }
@@ -42,8 +60,8 @@ export default {
 <style lang="less">
 .list {
   &-cell-container {
-    width: 90%;
-    height: 53vw;
+    width: 95%;
+    height: 56vw;
     display: block;
     border-radius: 4px;
     box-shadow: #2b2a2a;
@@ -57,19 +75,19 @@ export default {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     color: #ffffff;
-    padding: 12px;
+    padding: 8px;
     background: #ff7700
   }
   &-cell-label {
     padding: 15px 0;
-    font-size: 18px;
+    font-size: 14px;
     text-align: center;
     padding-left: 12px;
     color: rgb(63, 57, 57);
   }
   &-cell-value {
     padding: 15px 0;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
     color: rgb(2, 2, 2);
   }

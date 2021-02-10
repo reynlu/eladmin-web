@@ -3,9 +3,9 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
       <div v-for="(item) in list" :key="item.id" class="list-cell-container">
         <h3 class="list-cell-header">病人ID号： {{ item.diagnosisCardId }}</h3>
-        <p><label class="list-cell-label">录入时间</label>  {{ item.createAt }}</p>
-        <p><label class="list-cell-label">更新时间</label>  {{ item.updateAt }}</p>
-        <p><label class="list-cell-label">状态</label>  {{ item.state }}</p>
+        <p><label class="list-cell-label">录入时间</label>  {{ parseTime(item.createAt) }}</p>
+        <p><label class="list-cell-label">更新时间</label>  {{ parseTime(item.updateAt) }}</p>
+        <p><label class="list-cell-label">状态</label>  {{ formatState(item.state) }}</p>
         <p><label class="list-cell-label">备注</label>  {{ item.comment }}</p>
       </div>
     </van-list>
@@ -14,28 +14,47 @@
 <script>
 import 'vant/lib/index.css'
 import store from '@/store'
+import { parseTime } from '@/utils/index'
 import { getDiagnosisRecords } from '@/api/mobile/diagnosis'
 export default {
   data() {
     return {
-      defaultForm: {
-        residentId: store.getters.user.uid,
-        page: 0
-      },
       list: [],
       total: 0,
+      page: 0,
+      form: {
+        residentId: store.getters.user.username,
+        page: 0,
+        size: 5
+      },
       loading: false,
       finished: false
     }
   },
   methods: {
-    onLoad() {
-      getDiagnosisRecords(this.defaultForm).then(response => {
-        this.list = response.content
-        this.total = response.totalElements
-        this.loading = false
-        this.defaultForm.page = this.defaultForm.page + 1
-      })
+    parseTime,
+    async onLoad() {
+      this.loading = true
+      const response = await getDiagnosisRecords(this.form)
+      this.list = this.list.concat(response.content)
+      this.total = response.totalElements
+      this.loading = false
+      console.log(this.list.length)
+      if (response.content.length < 5) {
+        this.finished = true
+      } else {
+        this.form.page = this.form.page + 1
+        this.finished = false
+      }
+    },
+    formatState(state) {
+      if (state === 1) {
+        return '已经录入'
+      } else if (state === 2) {
+        return '已经更新'
+      } else {
+        return '未知'
+      }
     }
   }
 }

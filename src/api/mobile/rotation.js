@@ -5,6 +5,15 @@ export function getRotationRecords(params) {
   return request({
     url: '/api/rotation-record/get-rotation-list',
     method: 'get',
-    data: params
+    params
+  })
+}
+
+export function getCurrentRotation(params) {
+  console.log(params)
+  return request({
+    url: '/api/rotation-record/get-current-record',
+    method: 'get',
+    params
   })
 }
