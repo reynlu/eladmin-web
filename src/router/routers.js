@@ -114,6 +114,12 @@ export const constantRouterMap = [
     component: (resolve) => require(['@/views/mobile/diagnosis/history'], resolve),
     name: '诊断',
     meta: { title: '诊断记录' }
+  },
+  {
+    path: '/mobile/secretary/schedule',
+    component: (resolve) => require(['@/views/mobile/manager/ScheduleResident'], resolve),
+    name: '排班',
+    meta: { title: '排班' }
   }
 ]
 

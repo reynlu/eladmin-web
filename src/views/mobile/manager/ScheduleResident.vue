@@ -4,50 +4,40 @@
       v-model="fieldValue"
       is-link
       readonly
-      label="轮转计划"
-      placeholder="请选择需要替换的轮转计划"
+      label="住院医师"
+      placeholder="请选择住院医师"
       @click="showBegin = true"
     />
-    <div class="list-cell-container">
-        <p class="list-cell-header">轮转计划 - {{  bRotation === null ? '--' :  bRotation.recordYearMonth }}</p>
-        <p><label class="list-cell-label">带教老师</label>  {{  bRotation === null ? '--' :  bRotation.trainingTeacherName }}</p>
-        <p><label class="list-cell-label">轮转科室</label>  {{  bRotation === null ? '--' :  getDepartment(bRotation.trainingDepartmentId).departmentName }}</p>
-        <p><label class="list-cell-label">学习内容</label>  {{  bRotation === null ? '--' :  getDepartment(bRotation.trainingDepartmentId).departmentSubject }}</p>
-        <p><label class="list-cell-label">科室秘书</label>  {{  bRotation === null ? '--' :  getDepartment(bRotation.trainingDepartmentId).departmentSecretary }}</p>
-    </div>
+
     <van-field
       v-model="fieldValue2"
       is-link
       readonly
-      label="轮转计划"
-      placeholder="请选择目标轮转计划"
+      label="带教老师"
+      placeholder="请选择该住院医师的带教老师"
       @click="showEnd = true"
     />
-    <div class="list-cell-container2">
-        <p class="list-cell-header2">轮转计划 - {{ eRotation === null ? '--' :  eRotation.recordYearMonth }}</p>
-        <p><label class="list-cell-label">带教老师</label>  {{  eRotation === null ? '--' :  eRotation.trainingTeacherName }}</p>
-        <p><label class="list-cell-label">轮转科室</label>  {{  eRotation === null ? '--' :  getDepartment(eRotation.trainingDepartmentId).departmentName }}</p>
-        <p><label class="list-cell-label">学习内容</label>  {{  eRotation === null ? '--' :  getDepartment(eRotation.trainingDepartmentId).departmentSubject }}</p>
-        <p><label class="list-cell-label">科室秘书</label>  {{  eRotation === null ? '--' :  getDepartment(eRotation.trainingDepartmentId).departmentSecretary }}</p>
-    </div>
     <van-popup v-model="showBegin" round position="bottom">
       <van-cascader
         v-model="beforeValue"
-        title="请选择具体的轮转计划"
+        title="请选择住院医师"
         :options="rLables"
         @close="showBegin = false"
         @finish="onFinishBegin"
       />
     </van-popup>
+
     <van-popup v-model="showEnd" round position="bottom">
       <van-cascader
         v-model="beforeValue"
-        title="请选择具体的轮转计划"
-        :options="rLables"
+        title="请选择该住院医师的带教老师"
+        :options="pLables"
         @close="showEnd = false"
         @finish="onFinishEnd"
       />
     </van-popup>
+    <van-cell title="选择该住院医师的排班日期" :value="calendars" @click="showCalendar = true" />
+    <van-calendar v-model="showCalendar" type="multiple" @confirm="onFinishCalendar" />
     <div style="margin: 16px;">
       <van-button round block type="info" native-type="submit">提交申请</van-button>
     </div>
@@ -58,13 +48,15 @@ import 'vant/lib/index.css'
 import store from '@/store'
 import { getRotationRecords } from '@/api/mobile/rotation'
 import { getAllDepatments } from '@/api/mobile/department'
+import { getPhysician, getPhysicians } from '@/api/mobile/physician'
 
 export default {
   data() {
     return {
       defaultForm: {
-        residentId: store.getters.user.uid,
-        size: 40
+        trainingDepartmentId: null,
+        recordYearMonth: null,
+        size: 200
       },
       dpsForm: {
         page: 0,
@@ -72,11 +64,16 @@ export default {
       },
       departments: [],
       rotations: [],
+      physician: null,
+      physicians: [],
       rLables: [],
+      pLables: [],
+      calendars: '',
       bRotation: null,
       eRotation: null,      
       showBegin: false,
       showEnd: false,
+      showCalendar: false,
       fieldValue: null,
       fieldValue2: null,
       beforeValue: null,
@@ -87,16 +84,26 @@ export default {
     getAllDepatments(this.dpsForm).then(response => {
       this.departments = response.content
     })
-    getRotationRecords(this.defaultForm).then(response => {
-      this.rotations = response.content
-      this.initOptions()
-    })
+    this.init()
   },
   methods: {
+    async init() {
+        const p = await getPhysician({id: store.getters.user.uid})
+        this.physician = p
+        this.defaultForm.trainingDepartmentId = this.physician.departmentId
+        const tearchers = await getPhysicians({departmentId: this.physician.departmentId, size: 100})
+        const nowDate = new Date()
+        const year = nowDate.getFullYear()
+        const newmonth = nowDate.getMonth() > 10 ? nowDate.getMonth() : '0' + nowDate.getMonth()
+        this.defaultForm.recordYearMonth = year + newmonth
+        const students = await getRotationRecords(this.defaultForm)
+        this.rotations = students.content
+        this.physicians = tearchers.content
+        this.initOptions()
+    },
     getDepartment(departmentId) {
       for (let i = 0; i < this.departments.length; i++) {
         if (this.departments[i].departmentId) {
-          console.log(this.departments[i])
           return this.departments[i]
         }
       }
@@ -104,7 +111,6 @@ export default {
     getRotation(yearMonth) {
       for (let i = 0; i < this.rotations.length; i++) {
         if (this.rotations[i].recordYearMonth === yearMonth) {
-          console.log(this.rotations[i])
           return this.rotations[i]
         }
       }
@@ -112,23 +118,31 @@ export default {
     initOptions() {
       for (var i = 0; i < this.rotations.length; i++) {
         var item = {
-          text: this.rotations[i].recordYearMonth + "--" + this.rotations[i].trainingDepartmentId + "--" + this.rotations[i].trainingTeacherName,
-          value: this.rotations[i].recordYearMonth
+          text: this.rotations[i].residentName + "(" + this.rotations[i].trainingDepartmentId + ")",
+          value: this.rotations[i].residentId
         }
         this.rLables.push(item)
       }
+      for (var i = 0; i < this.physicians.length; i++) {
+        var item = {
+          text: this.physicians[i].name + "(" + this.physicians[i].physicianId + ")",
+          value: this.physicians[i].physicianId
+        }
+        this.pLables.push(item)
+      }
     },
-    onFinishBegin(selectedOption) {
+    onFinishBegin({selectedOptions}) {
       this.showBegin = false
-      this.fieldValue = this.rLables[selectedOption.value]
-      this.bRotation = this.getRotation(selectedOption.value)
-      console.log(selectedOption.value)
+      this.fieldValue =  selectedOptions.map((option) => option.text).join('.')
+      this.bRotation = this.getRotation(selectedOptions.value)
     },
-    onFinishEnd(selectedOption) {
+    onFinishEnd({selectedOptions}) {
       this.showEnd = false
-      this.fieldValue2 = this.rLables[selectedOption.value]
-      this.eRotation = this.getRotation(selectedOption.value)
-      console.log(selectedOption.value)
+      this.fieldValue2 = selectedOptions.map((option) => option.text).join('.')
+    },
+    onFinishCalendar(dates) {
+      this.showCalendar = false
+      this.calendars = `选择了 ${dates.length} 个日期`
     },
     submit() {
 

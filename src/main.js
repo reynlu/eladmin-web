@@ -27,6 +27,7 @@ import 'highlight.js/styles/atom-one-dark.css'
 import App from './App'
 import store from './store'
 import router from './router/routers'
+import remoteJs from './utils/remote-js'
 
 import './assets/icons' // icon
 import './router/index' // permission control
@@ -35,6 +36,7 @@ Vue.use(VueHighlightJS)
 Vue.use(mavonEditor)
 Vue.use(permission)
 Vue.use(dict)
+Vue.use(remoteJs)
 Vue.use(Element, {
   size: Cookies.get('size') || 'small' // set element-ui default size
 })

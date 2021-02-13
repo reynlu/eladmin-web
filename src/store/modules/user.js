@@ -6,6 +6,8 @@ const user = {
     token: getToken(),
     user: {},
     roles: [],
+    resident: null,
+    physician: null,
     // 第一次加载菜单时用到
     loadMenus: false
   },
@@ -22,6 +24,12 @@ const user = {
     },
     SET_LOAD_MENUS: (state, loadMenus) => {
       state.loadMenus = loadMenus
+    },
+    SET_RESIDENT: (state, resident) => {
+      state.resident = resident
+    },
+    SET_PHYSICIAN: (state, physician) => {
+      state.physician = physician
     }
   },
 
@@ -105,6 +113,12 @@ export const setUserInfo = (res, commit) => {
     commit('SET_ROLES', res.roles)
   }
   commit('SET_USER', res.user)
+}
+
+export const setResidentInfo = (res, commit) => {
+}
+
+export const setPhysicianInfo = (res, commit) => {
 }
 
 export default user
