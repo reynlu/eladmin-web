@@ -17,3 +17,11 @@ export function getCurrentRotation(params) {
     params
   })
 }
+
+export function updateRotation(params) {
+  return request({
+    url: '/api/rotation-record/update-rotation',
+    method: 'put',
+    data: params
+  })
+}

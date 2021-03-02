@@ -11,7 +11,7 @@
     />
 
     <van-field
-      v-model="resident"
+      v-model="fieldValue"
       is-link
       readonly
       label="住院医师"
@@ -20,15 +20,13 @@
     />
 
     <van-field
-      v-model="trainingTeacherName"
+      v-model="fieldValue2"
+      is-link
       readonly
       label="带教老师"
-      placeholder="未设置带教老师"
+      placeholder="请选择该住院医师的带教老师"
+      @click="showEnd = true"
     />
-
-    <van-cell title="选择该月份排班日期" :value="text" @click="showCalander = true" />
-    <van-calendar v-model="showCalander" type="multiple" :min-date="minDate" :max-date="maxDate" @confirm="onDateConfirm" />
-
     <van-popup v-model="showBegin" round position="bottom">
       <van-cascader
         v-model="beforeValue"
@@ -39,12 +37,22 @@
       />
     </van-popup>
 
+    <van-popup v-model="showEnd" round position="bottom">
+      <van-cascader
+        v-model="beforeValue"
+        title="请选择该住院医师的带教老师"
+        :options="pLables"
+        @close="showEnd = false"
+        @finish="onFinishEnd"
+      />
+    </van-popup>
+
     <van-popup v-model="showPicker" title="请选择年月" round position="bottom">
       <van-picker
         show-toolbar
         :columns="columns"
         @cancel="showPicker = false"
-        @confirm="onFinishYearMonth"
+        @confirm="onFinishCalendar"
       />
     </van-popup>
   
@@ -86,26 +94,25 @@ export default {
         size: 40
       },
       postForm: {
-        groupid: 1,
-        items: [],
-        yearmonth: 0
+        
       },
       departments: [],
       rotations: [],
       rotationsWithYearMonth: [],
       physician: null,
+      physicians: [],
       rLables: [],
+      pLables: [],
       yearMonth: '',
-      resident: null,
-      trainingTeacherName: '',
       student: null,
+      teacher: null,      
       showBegin: false,
+      showEnd: false,
       showPicker: false,
-      showCalander: false,
+      fieldValue: null,
+      fieldValue2: null,
       beforeValue: null,
-      afterValue: null,
-      minDate: new Date(),
-      maxDate: new Date()
+      afterValue: null
     }
   },
   created() {
@@ -119,8 +126,11 @@ export default {
         const p = await getPhysician({id: store.getters.user.uid})
         this.physician = p
         this.defaultForm.trainingDepartmentId = this.physician.departmentId
+        const tearchers = await getPhysicians({departmentId: this.physician.departmentId, size: 100})
         const students = await getRotationRecords(this.defaultForm)
         this.rotations = students.content
+        this.physicians = tearchers.content
+        this.initOptions()
     },
     getDepartment(departmentId) {
       for (let i = 0; i < this.departments.length; i++) {
@@ -136,7 +146,22 @@ export default {
         }
       }
     },
-
+    getTeacher(physicianId) {
+      for (let i = 0; i < this.physicians.length; i++) {
+        if (this.physicians[i].physicianId == physicianId) {
+          return this.physicians[i]
+        }
+      }
+    },
+    initOptions() {
+      for (var i = 0; i < this.physicians.length; i++) {
+        var item = {
+          text: this.physicians[i].name + "(" + this.physicians[i].physicianId + ")",
+          value: this.physicians[i].physicianId
+        }
+        this.pLables.push(item)
+      }
+    },
     initRotations(yearMonth) {
       this.rotationsWithYearMonth = []
       for (var i = 0; i < this.rotations.length; i++) {
@@ -152,44 +177,33 @@ export default {
         this.rLables.push(item)
       }
     },
-    onFinishYearMonth(value) {
-      this.showPicker = false
-      this.initRotations(value[0]+value[1])
-      this.postForm.yearmonth = value[0]+value[1]
-      this.yearMonth = `选择了 ${value[0]+value[1]}`
-      this.resident = ''
-      this.trainingTeacherName = ''
-      this.student = null
-      Toast.success('日期修改，请重新选择住院医师')
-      this.minDate = new Date(parseInt(value[0]), parseInt(value[1]) - 1, 1)
-      this.maxDate = new Date(parseInt(value[0]), parseInt(value[1]) - 1, 31)
-    },
     onFinishBegin({selectedOptions}) {
       this.showBegin = false
-      this.resident =  selectedOptions.map((option) => option.text).join('.')
+      this.fieldValue =  selectedOptions.map((option) => option.text).join('.')
       this.student = this.getRotation(selectedOptions[0].value)
-      this.trainingTeacherName = this.student.trainingTeacherName
     },
-    onDateConfirm(value) {
-      this.postForm.items = []
-      for (let i = 0; i < value.length; i++) {
-        const item = {
-          "userid": '82101010013',
-          "day": value[i].getDate(),
-          "schedule_id": 79
-        }
-        this.postForm.items.push(item)
-      }
-      console.log(this.postForm)
-      this.showCalander = false
+    onFinishEnd({selectedOptions}) {
+      this.showEnd = false
+      this.fieldValue2 = selectedOptions.map((option) => option.text).join('.')
+      this.teacher = this.getTeacher(selectedOptions[0].value)
+    },
+    onFinishCalendar(value) {
+      this.showPicker = false
+      this.initRotations(value[0]+value[1])
+      this.yearMonth = `选择了 ${value[0]+value[1]} 个日期`
     },
     submit() {
       var _this = this
-      assignSchedule(this.postForm).then(response => {
-        this.resident = ''
-        this.trainingTeacherName = ''
-        this.student = null 
-        Toast.success('设置成功成功，请继续后续操作');
+      console.log(this.teacher)
+      this.student.trainingTeacherName = this.teacher.name
+      this.student.trainingTeacherId = this.teacher.physicianId
+      updateRotation(this.student).then(response => {
+        this.fieldValue = ''
+        this.fieldValue2 = ''
+        this.yearMonth = ''
+        this.student = null,
+        this.teacher = null, 
+        Toast.success('录入成功，请继续后续操作');
       })
     }
   }

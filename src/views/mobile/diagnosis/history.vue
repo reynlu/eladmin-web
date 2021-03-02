@@ -7,7 +7,6 @@
         <p><label class="list-cell-label">更新时间</label>  {{ parseTime(item.updateAt) }}</p>
         <p><label class="list-cell-label">轮转科室</label>  {{ getDepartment(item.trainingDepartmentId).departmentName }}</p>
         <p><label class="list-cell-label">学习内容</label>  {{ getDepartment(item.trainingDepartmentId).departmentSubject }}</p>
-        <p><label class="list-cell-label">状态</label>  {{ formatState(item.state) }}</p>
         <p><label class="list-cell-label">备注</label>  {{ item.comment }}</p>
       </div>
     </van-list>

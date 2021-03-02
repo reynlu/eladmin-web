@@ -15,6 +15,21 @@ export const constantRouterMap = [
     component: (resolve) => require(['@/views/mobile/loginWeixin'], resolve),
     hidden: true
   },
+  { path: '/login-wework-secretary',
+    meta: { title: '登录', noCache: true },
+    component: (resolve) => require(['@/views/mobile/loginSecretary'], resolve),
+    hidden: true
+  },
+  { path: '/resident-home',
+    meta: { title: '住院医师', noCache: true },
+    component: (resolve) => require(['@/views/mobile/residentHome'], resolve),
+    hidden: true
+  },
+  { path: '/secretary-home',
+    meta: { title: '秘书管理', noCache: true },
+    component: (resolve) => require(['@/views/mobile/secretaryHome'], resolve),
+    hidden: true
+  },
   {
     path: '/404',
     component: (resolve) => require(['@/views/features/404'], resolve),
@@ -116,10 +131,22 @@ export const constantRouterMap = [
     meta: { title: '诊断记录' }
   },
   {
-    path: '/mobile/secretary/schedule',
+    path: '/mobile-secretary/schedule',
     component: (resolve) => require(['@/views/mobile/manager/ScheduleResident'], resolve),
-    name: '排班',
-    meta: { title: '排班' }
+    name: '住院医师排班',
+    meta: { title: '住院医师排班' }
+  },
+  {
+    path: '/mobile-secretary/assign-teacher',
+    component: (resolve) => require(['@/views/mobile/manager/AssignPhysician'], resolve),
+    name: '设置带教老师',
+    meta: { title: '设置带教老师' }
+  },
+  {
+    path: '/mobile-secretary/rotation-list',
+    component: (resolve) => require(['@/views/mobile/manager/ResidentRotationList'], resolve),
+    name: '轮转列表',
+    meta: { title: '查看轮转列表' }
   }
 ]
 

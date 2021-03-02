@@ -49,13 +49,14 @@
       />
     </van-popup>
     <div style="margin: 16px;">
-      <van-button round block type="info" native-type="submit">提交申请</van-button>
+      <van-button round block type="info" native-type="submit" @click="submit()">提交申请</van-button>
     </div>
   </div>
 </template>
 <script>
 import 'vant/lib/index.css'
 import store from '@/store'
+import { Toast } from 'vant'; 
 import { getRotationRecords } from '@/api/mobile/rotation'
 import { getAllDepatments } from '@/api/mobile/department'
 
@@ -104,7 +105,6 @@ export default {
     getRotation(yearMonth) {
       for (let i = 0; i < this.rotations.length; i++) {
         if (this.rotations[i].recordYearMonth === yearMonth) {
-          console.log(this.rotations[i])
           return this.rotations[i]
         }
       }
@@ -118,20 +118,22 @@ export default {
         this.rLables.push(item)
       }
     },
-    onFinishBegin(selectedOption) {
+    onFinishBegin({selectedOptions}) {
       this.showBegin = false
-      this.fieldValue = this.rLables[selectedOption.value]
-      this.bRotation = this.getRotation(selectedOption.value)
-      console.log(selectedOption.value)
+      this.fieldValue =  selectedOptions.map((option) => option.text).join('.')
+      this.bRotation = this.getRotation(selectedOptions[0].value)
     },
-    onFinishEnd(selectedOption) {
+    onFinishEnd({selectedOptions}) {
       this.showEnd = false
-      this.fieldValue2 = this.rLables[selectedOption.value]
-      this.eRotation = this.getRotation(selectedOption.value)
-      console.log(selectedOption.value)
+      this.fieldValue2 =  selectedOptions.map((option) => option.text).join('.')
+      this.eRotation = this.getRotation(selectedOptions[0].value)
     },
     submit() {
-
+      this.fieldValue = ''
+      this.fieldValue2 = ''
+      this.bRotation = null,
+      this.eRotation = null,   
+      Toast.success('申请提交成功');
     }
   }
 }

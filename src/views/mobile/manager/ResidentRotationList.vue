@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <van-field
       v-model="yearMonth"
       is-link
@@ -9,36 +8,15 @@
       placeholder="请选择设置的时间"
       @click="showPicker = true"
     />
-
-    <van-field
-      v-model="resident"
-      is-link
-      readonly
-      label="住院医师"
-      placeholder="请选择住院医师"
-      @click="showBegin = true"
-    />
-
-    <van-field
-      v-model="trainingTeacherName"
-      readonly
-      label="带教老师"
-      placeholder="未设置带教老师"
-    />
-
-    <van-cell title="选择该月份排班日期" :value="text" @click="showCalander = true" />
-    <van-calendar v-model="showCalander" type="multiple" :min-date="minDate" :max-date="maxDate" @confirm="onDateConfirm" />
-
-    <van-popup v-model="showBegin" round position="bottom">
-      <van-cascader
-        v-model="beforeValue"
-        title="请选择住院医师"
-        :options="rLables"
-        @close="showBegin = false"
-        @finish="onFinishBegin"
-      />
-    </van-popup>
-
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <div v-for="item in rotationsWithYearMonth" :key="item.id" class="list-cell-container">
+        <p class="list-cell-header">学员姓名 - {{ item.residentName }}</p>
+        <p><label class="list-cell-label">带教老师</label>  {{ item.trainingTeacherName }}</p>
+        <p><label class="list-cell-label">轮转科室</label>  {{ getDepartment(item.trainingDepartmentId).departmentName }}</p>
+        <p><label class="list-cell-label">学习内容</label>  {{ getDepartment(item.trainingDepartmentId).departmentSubject }}</p>
+        <p><label class="list-cell-label">科室秘书</label>  {{ getDepartment(item.trainingDepartmentId).departmentSecretary }}</p>
+      </div>
+    </van-list>
     <van-popup v-model="showPicker" title="请选择年月" round position="bottom">
       <van-picker
         show-toolbar
@@ -47,10 +25,6 @@
         @confirm="onFinishYearMonth"
       />
     </van-popup>
-  
-    <div style="margin: 16px;">
-      <van-button round block type="info" native-type="submit" @click="submit()">提交</van-button>
-    </div>
   </div>
 </template>
 <script>
@@ -86,9 +60,7 @@ export default {
         size: 40
       },
       postForm: {
-        groupid: 1,
-        items: [],
-        yearmonth: 0
+        
       },
       departments: [],
       rotations: [],
@@ -144,53 +116,11 @@ export default {
           this.rotationsWithYearMonth.push(this.rotations[i])
         }
       }
-      for (var i = 0; i < this.rotationsWithYearMonth.length; i++) {
-        var item = {
-          text: this.rotationsWithYearMonth[i].residentName + "(" + this.rotationsWithYearMonth[i].trainingDepartmentId + ")",
-          value: this.rotationsWithYearMonth[i].residentId
-        }
-        this.rLables.push(item)
-      }
     },
     onFinishYearMonth(value) {
       this.showPicker = false
       this.initRotations(value[0]+value[1])
-      this.postForm.yearmonth = value[0]+value[1]
       this.yearMonth = `选择了 ${value[0]+value[1]}`
-      this.resident = ''
-      this.trainingTeacherName = ''
-      this.student = null
-      Toast.success('日期修改，请重新选择住院医师')
-      this.minDate = new Date(parseInt(value[0]), parseInt(value[1]) - 1, 1)
-      this.maxDate = new Date(parseInt(value[0]), parseInt(value[1]) - 1, 31)
-    },
-    onFinishBegin({selectedOptions}) {
-      this.showBegin = false
-      this.resident =  selectedOptions.map((option) => option.text).join('.')
-      this.student = this.getRotation(selectedOptions[0].value)
-      this.trainingTeacherName = this.student.trainingTeacherName
-    },
-    onDateConfirm(value) {
-      this.postForm.items = []
-      for (let i = 0; i < value.length; i++) {
-        const item = {
-          "userid": '82101010013',
-          "day": value[i].getDate(),
-          "schedule_id": 79
-        }
-        this.postForm.items.push(item)
-      }
-      console.log(this.postForm)
-      this.showCalander = false
-    },
-    submit() {
-      var _this = this
-      assignSchedule(this.postForm).then(response => {
-        this.resident = ''
-        this.trainingTeacherName = ''
-        this.student = null 
-        Toast.success('设置成功成功，请继续后续操作');
-      })
     }
   }
 }
@@ -205,7 +135,7 @@ export default {
     box-shadow: #2b2a2a;
     margin-left: 12px;
     margin-right: 12px;
-    background: #09afe2;
+    background: #09e26b;
   }
   &-cell-container2 {
     width: 95%;
@@ -224,7 +154,7 @@ export default {
     border-top-right-radius: 4px;
     color: #ffffff;
     padding: 12px;
-    background: #00edfe;
+    background: #bafe00;
   }
   &-cell-header2 {
     padding-top: 12px;

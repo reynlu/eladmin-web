@@ -95,17 +95,17 @@ export default {
       axios.get(`http://axyz.run/wx-api/get-wx-config?appId=1000003&url=${reUrl}`).then(function(response) {
         const config = response.data
         config['beta'] = true
-        config['debug'] = false
         config['jsApiList'] = ['scanQRCode']
         wx.config(config)
       }).catch(function (error) {
-        alert(JSON.stringify(error))
+        console.log(error)
       })
 
       wx.ready(function(){
       })
 
       wx.error(function(res){
+        console.log(res)
       })
     }, 500)
   },
@@ -132,11 +132,9 @@ export default {
         needResult: 1, // 默认为0，扫描结果由企业微信处理，1则直接返回扫描结果，
         scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是条形码（一维码），默认二者都有
         success: function(res) {
-          alert(res.resultStr)
           _this.defaultForm.diagnosisCardId = res.resultStr
         },
         error: function(res) {
-          alert(res)
           if (res.errMsg.indexOf('function_not_exist') > 0) {
               alert('版本过低请升级')
           }
