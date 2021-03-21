@@ -25,3 +25,19 @@ export function updateRotation(params) {
     data: params
   })
 }
+
+export function updateScheduleRotation(params) {
+  return request({
+    url: '/api/resident-schedule-record',
+    method: 'post',
+    data: params
+  })
+}
+
+export function getSchedules(params) {
+  return request({
+    url: '/api/resident-schedule-record',
+    method: 'get',
+    params
+  })
+}

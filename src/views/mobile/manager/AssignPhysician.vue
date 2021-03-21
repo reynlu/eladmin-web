@@ -134,14 +134,14 @@ export default {
     },
     getDepartment(departmentId) {
       for (let i = 0; i < this.departments.length; i++) {
-        if (this.departments[i].departmentId) {
+        if (parseInt(this.departments[i].departmentId) === departmentId) {
           return this.departments[i]
         }
       }
     },
-    getRotation(residentId) {
+    getRotation(residentId, yearMonth) {
       for (let i = 0; i < this.rotations.length; i++) {
-        if (this.rotations[i].residentId == residentId) {
+        if (this.rotations[i].residentId == residentId && this.rotations[i].recordYearMonth == yearMonth) {
           return this.rotations[i]
         }
       }
@@ -164,6 +164,7 @@ export default {
     },
     initRotations(yearMonth) {
       this.rotationsWithYearMonth = []
+      this.rLables = []
       for (var i = 0; i < this.rotations.length; i++) {
         if (this.rotations[i].recordYearMonth == yearMonth) {
           this.rotationsWithYearMonth.push(this.rotations[i])
@@ -176,11 +177,12 @@ export default {
         }
         this.rLables.push(item)
       }
+      console.log(this.rotationsWithYearMonth)
     },
     onFinishBegin({selectedOptions}) {
       this.showBegin = false
       this.fieldValue =  selectedOptions.map((option) => option.text).join('.')
-      this.student = this.getRotation(selectedOptions[0].value)
+      this.student = this.getRotation(selectedOptions[0].value, this.yearMonth)
     },
     onFinishEnd({selectedOptions}) {
       this.showEnd = false
@@ -190,7 +192,7 @@ export default {
     onFinishCalendar(value) {
       this.showPicker = false
       this.initRotations(value[0]+value[1])
-      this.yearMonth = `选择了 ${value[0]+value[1]} 个日期`
+      this.yearMonth = value[0]+value[1]
     },
     submit() {
       var _this = this

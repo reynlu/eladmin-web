@@ -96,7 +96,7 @@ export default {
     },
     getDepartment(departmentId) {
       for (let i = 0; i < this.departments.length; i++) {
-        if (this.departments[i].departmentId) {
+        if (parseInt(this.departments[i].departmentId) === departmentId) {
           return this.departments[i]
         }
       }
@@ -135,7 +135,8 @@ export default {
     box-shadow: #2b2a2a;
     margin-left: 12px;
     margin-right: 12px;
-    background: #09e26b;
+    background: #12C99B;
+    color: #ffffff;
   }
   &-cell-container2 {
     width: 95%;
@@ -145,7 +146,7 @@ export default {
     box-shadow: #2b2a2a;
     margin-left: 12px;
     margin-right: 12px;
-    background: #f5e4d6;
+    background: #12C99B;
   }
   &-cell-header {
     padding-top: 12px;
@@ -154,7 +155,7 @@ export default {
     border-top-right-radius: 4px;
     color: #ffffff;
     padding: 12px;
-    background: #bafe00;
+    background: rgb(1, 250, 188);
   }
   &-cell-header2 {
     padding-top: 12px;
@@ -170,13 +171,13 @@ export default {
     font-size: 14px;
     text-align: center;
     padding-left: 12px;
-    color: rgb(63, 57, 57);
+    color: #ffffff;
   }
   &-cell-value {
     padding: 15px 0;
     font-size: 14px;
     text-align: center;
-    color: rgb(2, 2, 2);
+    color: #ffffff;
   }
 }
 </style>

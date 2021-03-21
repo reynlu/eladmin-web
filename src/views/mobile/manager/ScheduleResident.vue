@@ -57,7 +57,7 @@
 import 'vant/lib/index.css'
 import store from '@/store'
 import { Toast } from 'vant'
-import { getRotationRecords, updateRotation } from '@/api/mobile/rotation'
+import { getRotationRecords, updateRotation, updateScheduleRotation } from '@/api/mobile/rotation'
 import { getAllDepatments } from '@/api/mobile/department'
 import { getPhysician, getPhysicians } from '@/api/mobile/physician'
 import { assignSchedule } from '@/api/mobile/wx'
@@ -104,6 +104,7 @@ export default {
       showCalander: false,
       beforeValue: null,
       afterValue: null,
+      dStr: "",
       minDate: new Date(),
       maxDate: new Date()
     }
@@ -124,7 +125,7 @@ export default {
     },
     getDepartment(departmentId) {
       for (let i = 0; i < this.departments.length; i++) {
-        if (this.departments[i].departmentId) {
+        if (parseInt(this.departments[i].departmentId) === departmentId) {
           return this.departments[i]
         }
       }
@@ -172,15 +173,22 @@ export default {
     },
     onDateConfirm(value) {
       this.postForm.items = []
+      this.dStr = ""
+      const nowDate = new Date()
+      const day = nowDate.getDate()
+      console.log(day)
       for (let i = 0; i < value.length; i++) {
-        const item = {
-          "userid": '82101010013',
-          "day": value[i].getDate(),
-          "schedule_id": 79
+        if (day < value[i].getDate()) {
+          const item = {
+            "userid": this.student.residentId,
+            "day": value[i].getDate(),
+            "schedule_id": 79
+          }
+          this.postForm.items.push(item)
+          this.dStr = this.dStr + "," + value[i].getDate()
         }
-        this.postForm.items.push(item)
       }
-      console.log(this.postForm)
+      console.log(this.dStr)
       this.showCalander = false
     },
     submit() {
@@ -190,6 +198,14 @@ export default {
         this.trainingTeacherName = ''
         this.student = null 
         Toast.success('设置成功成功，请继续后续操作');
+      })    
+      var form = {
+        residentId: this.student.residentId,
+        yearMonth: this.postForm.yearmonth,
+        scheduleValue: this.dStr,
+        synchronization: false
+      }
+      updateScheduleRotation(form).then(response => {
       })
     }
   }

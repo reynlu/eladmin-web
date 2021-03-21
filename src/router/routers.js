@@ -131,6 +131,12 @@ export const constantRouterMap = [
     meta: { title: '诊断记录' }
   },
   {
+    path: '/mobile/schedule-calendar',
+    component: (resolve) => require(['@/views/mobile/rotation/ScheduleCalendar'], resolve),
+    name: '排班日历',
+    meta: { title: '排班日历' }
+  },
+  {
     path: '/mobile-secretary/schedule',
     component: (resolve) => require(['@/views/mobile/manager/ScheduleResident'], resolve),
     name: '住院医师排班',

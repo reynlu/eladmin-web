@@ -39,8 +39,6 @@ export default {
     async onLoad() {
       const dps = await getAllDepatments(this.dpsForm)
       const rotations = await getRotationRecords(this.defaultForm)
-      console.log(dps)
-      console.log(rotations)
       this.departments = this.departments.concat(dps.content)
       this.list = rotations.content
       this.total = rotations.totalElements
@@ -49,7 +47,7 @@ export default {
     },
     getDepartment(departmentId) {
       for (let i = 0; i < this.departments.length; i++) {
-        if (this.departments[i].departmentId) {
+        if (parseInt(this.departments[i].departmentId) === departmentId) {
           return this.departments[i]
         }
       }

@@ -21,17 +21,17 @@ export default {
     return {
       routers: [
           {
-              url: 'http://axyz.run/mobile-secretary/schedule',
+              url: 'https://axyz.run/mobile-secretary/schedule',
               icon: Shapes,
               text: '排班'
           },
           {
-              url: 'http://axyz.run/mobile-secretary/assign-teacher',
+              url: 'https://axyz.run/mobile-secretary/assign-teacher',
               icon: Harmony,
               text: '带教老师'
           },
           {
-              url: 'http://axyz.run/mobile-secretary/rotation-list',
+              url: 'https://axyz.run/mobile-secretary/rotation-list',
               icon: Play,
               text: '查看轮转列表'
           },

@@ -19,29 +19,29 @@ export default {
     return {
       routers: [
           {
-              url: 'http://axyz.run/mobile/rotation/list',
+              url: 'https://axyz.run/mobile/rotation/list',
               icon: Angles,
               text: '轮转计划'
           },
           {
-              url: 'http://axyz.run/mobile/rotation/exchange',
+              url: 'https://axyz.run/mobile/rotation/exchange',
               icon: Harmony,
               text: '变更申请'
           },
           {
-              url: 'http://axyz.run/mobile/diagnosis/add',
+              url: 'https://axyz.run/mobile/diagnosis/add',
               icon: Play,
               text: '诊断录入'
           },
           {
-              url: 'http://axyz.run/mobile/diagnosis/history',
+              url: 'https://axyz.run/mobile/diagnosis/history',
               icon: Radial,
               text: '诊断历史'
           },
           {
-              url: '',
+              url: 'https://axyz.run/mobile/schedule-calendar',
               icon: logo,
-              text: '活动'
+              text: '排班日历'
           },
           {
               url: '',

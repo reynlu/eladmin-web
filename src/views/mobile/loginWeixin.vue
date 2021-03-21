@@ -32,7 +32,7 @@ export default {
     this.weixinCode = getQueryObject(window.location.href).userid
     this.redirect = getQueryObject(window.location.href).redirect
     if (!this.weixinCode) {
-      const url = `http://axyz.run/wx-api/code2user-info?appId=1000003&response_type=code&scope&redirect=${this.redirect}`
+      const url = `https://axyz.run/wx-api/code2user-info?appId=1000003&response_type=code&scope&redirect=${this.redirect}`
       const encodeUrl = encodeURIComponent(url)
       window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww98802d1f88cae07b&redirect_uri=${encodeUrl}&response_type%3Dcode%26scope%3Dsnsapi_base%26state%3D%23wechat_redirect`
     }
