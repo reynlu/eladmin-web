@@ -65,6 +65,7 @@ export default {
       this.schedules = response.content
     })
     console.log(store.getters.user)
+    console.log(store.getters.resident)
   },
   methods: {
     initDays(yearMonth) {

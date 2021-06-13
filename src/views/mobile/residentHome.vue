@@ -7,12 +7,13 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-import Angles from '@/assets/images/Angles.png'
-import Harmony from '@/assets/images/Harmony.png'
-import Play from '@/assets/images/Play.png'
-import Radial from '@/assets/images/Radial.png'
-import logo from '@/assets/images/logo.png'
+import resident_轮转计划 from '@/assets/images/entrance/resident_轮转计划.jpg'
+import resident_变更申请 from '@/assets/images/entrance/resident_变更申请.jpg'
+import resident_诊断录入 from '@/assets/images/entrance/resident_诊断录入.jpg'
+import resident_诊断历史 from '@/assets/images/entrance/resident_诊断历史.jpg'
+import resident_排班 from '@/assets/images/entrance/resident_排班.jpg'
+import resident_匹配带教 from '@/assets/images/entrance/resident_匹配带教.jpg'
+import resident_教学活动 from '@/assets/images/entrance/resident_教学活动.jpg'
 export default {
   name: 'Login',
   data() {
@@ -20,33 +21,33 @@ export default {
       routers: [
           {
               url: 'https://axyz.run/mobile/rotation/list',
-              icon: Angles,
+              icon: resident_轮转计划,
               text: '轮转计划'
           },
           {
               url: 'https://axyz.run/mobile/rotation/exchange',
-              icon: Harmony,
+              icon: resident_变更申请,
               text: '变更申请'
           },
           {
               url: 'https://axyz.run/mobile/diagnosis/add',
-              icon: Play,
+              icon: resident_诊断录入,
               text: '诊断录入'
           },
           {
               url: 'https://axyz.run/mobile/diagnosis/history',
-              icon: Radial,
+              icon: resident_诊断历史,
               text: '诊断历史'
           },
           {
               url: 'https://axyz.run/mobile/schedule-calendar',
-              icon: logo,
+              icon: resident_排班,
               text: '排班日历'
           },
           {
-              url: '',
-              icon: logo,
-              text: '其他'
+              url: 'https://axyz.run/mobile/teaching',
+              icon: resident_教学活动,
+              text: '教学活动'
           }
       ]
       

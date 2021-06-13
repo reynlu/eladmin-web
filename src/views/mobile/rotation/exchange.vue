@@ -58,7 +58,7 @@ import 'vant/lib/index.css'
 import store from '@/store'
 import { mapState } from 'vuex'
 import { Toast } from 'vant'; 
-import { getRotationRecords } from '@/api/mobile/rotation'
+import { getRotationRecords, addWxExchangeRecord } from '@/api/mobile/rotation'
 import { getAllDepatments } from '@/api/mobile/department'
 import { applyEvent, getApplyTemplete } from '@/api/mobile/wx'
 
@@ -238,15 +238,39 @@ export default {
       
       applyEvent(this.applyForm).then(response => {
               this.listLoading = false
-              this.fieldValue = ''
-              this.fieldValue2 = ''
-              this.bRotation = null,
-              this.eRotation = null, 
-              Toast.success('申请提交成功');
+              if (response.errcode === 0) {
+                this.addRecord(response.sp_no)
+                this.fieldValue = ''
+                this.fieldValue2 = ''
+                this.bRotation = null,
+                this.eRotation = null,
+                Toast.success('申请提交成功');
+              } else {
+                Toast.success('申请提交失败');
+              }
             })
             .catch(e => {
+              //this.addRecord("100021212182121")
               Toast.success('申请提交失败');
             })  
+    },
+    addRecord(sp_no) {
+      var postForm = {
+        residentId: store.getters.user.uid,
+        residentName: store.getters.user.nickName,
+        originTrainingDepartmentId: this.bRotation.trainingDepartmentId,
+        destinationTrainingDepartmentId: this.eRotation.trainingDepartmentId,
+        originYearMonth: this.bRotation.recordYearMonth,
+        destinationYearMonth: this.eRotation.recordYearMonth,
+        weWorkNumberId: sp_no,
+        weWorkState: 1
+      }
+      addWxExchangeRecord(postForm).then(response => {
+        Toast.success('申请提交成功')
+      })
+      .catch(e => {
+        Toast.success('申请提交失败')
+      })
     }
   },
   computed: {

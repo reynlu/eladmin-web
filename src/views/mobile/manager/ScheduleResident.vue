@@ -56,7 +56,7 @@
 <script>
 import 'vant/lib/index.css'
 import store from '@/store'
-import { Toast } from 'vant'
+import { Toast, Dialog } from 'vant'
 import { getRotationRecords, updateRotation, updateScheduleRotation } from '@/api/mobile/rotation'
 import { getAllDepatments } from '@/api/mobile/department'
 import { getPhysician, getPhysicians } from '@/api/mobile/physician'

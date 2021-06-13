@@ -74,7 +74,7 @@ service.interceptors.response.use(
         const errorMsg = error.response.data.message
         if (errorMsg !== undefined) {
           Notification.error({
-            title: errorMsg,
+            title: '请求失败，请稍后再试',
             duration: 5000
           })
         }

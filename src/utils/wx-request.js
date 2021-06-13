@@ -32,9 +32,6 @@ service.interceptors.response.use(
   response => {
     const code = response.status
     if (code < 200 || code > 300) {
-      Notification.error({
-        title: response.message
-      })
       return Promise.reject('error')
     } else {
       return response.data
@@ -74,7 +71,7 @@ service.interceptors.response.use(
         const errorMsg = error.response.data.message
         if (errorMsg !== undefined) {
           Notification.error({
-            title: errorMsg,
+            title: '请求失败，请稍后再试',
             duration: 5000
           })
         }

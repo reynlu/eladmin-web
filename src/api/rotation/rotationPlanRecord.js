@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function rotationGroup(params) {
+  return request({
+    url: 'api/rotation-record/get-plan-group',
+    method: 'get',
+    params
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/rotationPlanRecord',

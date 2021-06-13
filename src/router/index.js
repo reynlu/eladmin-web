@@ -9,7 +9,7 @@ import { filterAsyncRouter } from '@/store/modules/permission'
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
-const whiteList = ['/login', '/login-wework', '/login-wework-secretary', '/resident-home', '/secretary-home']// no redirect whitelist
+const whiteList = ['/login', '/login-wework', '/login-wework-secretary']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
@@ -45,10 +45,10 @@ router.beforeEach((to, from, next) => {
     /* has no token*/
     if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
       next()
-    } else if (to.path.substr(0, 17) === '/mobile-secretary') {
+    } else if (to.path.substr(0, 17) === '/mobile-secretary' || to.path === '/secretary-home') {
       next(`/login-wework-secretary?redirect=${to.path}`) // 否则全部重定向到登录页
       NProgress.done()
-    } else if (to.path.substr(0, 7) === '/mobile') {
+    } else if (to.path.substr(0, 7) === '/mobile' || to.path === '/resident-home') {
       next(`/login-wework?redirect=${to.path}`) // 否则全部重定向到登录页
       NProgress.done()
     } else {

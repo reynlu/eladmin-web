@@ -110,49 +110,99 @@ export const constantRouterMap = [
     path: '/mobile/rotation/list',
     component: (resolve) => require(['@/views/mobile/rotation/list'], resolve),
     name: '轮转计划',
+    hidden: true,
     meta: { title: '轮转计划' }
   },
   {
     path: '/mobile/rotation/exchange',
     component: (resolve) => require(['@/views/mobile/rotation/exchange'], resolve),
     name: '轮转调换申请',
+    hidden: true,
     meta: { title: '轮转调换申请' }
   },
   {
     path: '/mobile/diagnosis/add',
     component: (resolve) => require(['@/views/mobile/diagnosis/addDiagnosis'], resolve),
     name: '录入诊断',
+    hidden: true,
     meta: { title: '录入诊断' }
   },
   {
     path: '/mobile/diagnosis/history',
     component: (resolve) => require(['@/views/mobile/diagnosis/history'], resolve),
     name: '诊断',
+    hidden: true,
     meta: { title: '诊断记录' }
   },
   {
     path: '/mobile/schedule-calendar',
     component: (resolve) => require(['@/views/mobile/rotation/ScheduleCalendar'], resolve),
     name: '排班日历',
+    hidden: true,
     meta: { title: '排班日历' }
+  },
+  {
+    path: '/mobile/teaching',
+    component: (resolve) => require(['@/views/mobile/rotation/Teaching'], resolve),
+    name: '教学活动-学生',
+    hidden: true,
+    meta: { title: '教学活动' }
   },
   {
     path: '/mobile-secretary/schedule',
     component: (resolve) => require(['@/views/mobile/manager/ScheduleResident'], resolve),
     name: '住院医师排班',
+    hidden: true,
     meta: { title: '住院医师排班' }
   },
   {
     path: '/mobile-secretary/assign-teacher',
     component: (resolve) => require(['@/views/mobile/manager/AssignPhysician'], resolve),
     name: '设置带教老师',
+    hidden: true,
     meta: { title: '设置带教老师' }
   },
   {
     path: '/mobile-secretary/rotation-list',
     component: (resolve) => require(['@/views/mobile/manager/ResidentRotationList'], resolve),
     name: '轮转列表',
+    hidden: true,
     meta: { title: '查看轮转列表' }
+  },
+  {
+    path: '/mobile-secretary/diagnosis-history',
+    component: (resolve) => require(['@/views/mobile/diagnosis/historyDepartment'], resolve),
+    name: '科室诊断',
+    hidden: true,
+    meta: { title: '科室诊断记录' }
+  },
+  {
+    path: '/mobile-secretary/teaching',
+    component: (resolve) => require(['@/views/mobile/manager/Teaching'], resolve),
+    name: '教学活动-秘书',
+    hidden: true,
+    meta: { title: '教学活动' }
+  },
+  {
+    path: '/mobile-secretary/jd/students',
+    component: (resolve) => require(['@/views/mobile/jd/jdResidents'], resolve),
+    name: '基地学员查询',
+    hidden: true,
+    meta: { title: '基地学员查询' }
+  },
+  {
+    path: '/mobile-secretary/jd/rotations',
+    component: (resolve) => require(['@/views/mobile/jd/jdRotations'], resolve),
+    name: '基地轮转查询',
+    hidden: true,
+    meta: { title: '基地轮转查询' }
+  },
+  {
+    path: '/mobile-secretary/jd/teaching',
+    component: (resolve) => require(['@/views/mobile/jd/jdTeaching'], resolve),
+    name: '教学活动-基地',
+    hidden: true,
+    meta: { title: '教学活动' }
   }
 ]
 

@@ -65,7 +65,8 @@
               />
             </el-select>
             <rrOperation />
-            <el-button type="primary" class="link-left" @click="uploadXML">导入</el-button>
+            <el-button type="primary" class="filter-item" size="mini" @click="uploadXML">导入学员</el-button>
+            <el-button type="primary" class="filter-item" size="mini" @click="uploadXMLPhysician">导入师资</el-button>
           </div>
           <crudOperation show :permission="permission" />
         </div>
@@ -156,7 +157,32 @@
             <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
           </div>
         </el-dialog>
-        <el-dialog :visible.sync="dialogVisible" title="导入考题表格" width="570px">
+        <el-dialog :visible.sync="dialogVisible" title="导入学员信息" width="570px">
+          <el-upload
+            ref="upload"
+            class="upload-demo"
+            :action="uploadUrl"
+            name="excelFile"
+            :data="params"
+            :headers="headers"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :file-list="fileList"
+            :auto-upload="false"
+          >
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-button
+              style="margin-left: 10px;"
+              size="small"
+              type="success"
+              @click="submitUpload"
+            >上传到服务器</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传XML文件，且不超过500kb</div>
+          </el-upload>
+        </el-dialog>
+
+        <el-dialog :visible.sync="dialogVisiblePhysician" title="导入师资信息" width="570px">
           <el-upload
             ref="upload"
             class="upload-demo"
@@ -324,13 +350,10 @@ export default {
           { required: true, message: '请输入用户昵称', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
-        email: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
-        ],
         phone: [{ required: true, trigger: 'blur', validator: validPhone }]
       },
       dialogVisible: false,
+      dialogVisiblePhysician: false,
       headers: {
         Authorization: getToken()
       },
@@ -512,6 +535,9 @@ export default {
     },
     uploadXML() {
       this.dialogVisible = true
+    },
+    uploadXMLPhysician() {
+      this.dialogVisiblePhysician = true
     },
     submitUpload() {
       this.$refs.upload.submit()

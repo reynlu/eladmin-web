@@ -41,3 +41,11 @@ export function getSchedules(params) {
     params
   })
 }
+
+export function addWxExchangeRecord(params) {
+  return request({
+    url: '/api/wx-rotation-exchange-record',
+    method: 'post',
+    data: params
+  })
+}
